@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Cognitive Beats</string>
+    <string name="entrainment_service_description">"Plays audio data for Cognitive Beats"</string>
+    <string name="notification_id">"01234"</string>
+</resources>
