@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Environment;
 import android.os.IBinder;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,11 +17,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.protobuf.Message;
+import com.google.protobuf.TextFormat;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class LibraryActivity extends AppCompatActivity {
 
-    private CognitiveBeats beats;
+    private final String mBeatsFilename = "BeatsList";
+    private ArrayList<BeatConfiguration> mBeats = new ArrayList<BeatConfiguration>();
     private EntrainmentService mService;
     private boolean mBound = false;
 
@@ -28,28 +40,19 @@ public class LibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
 
-        // Register to receive messages.
-        // We are registering an observer (mMessageReceiver) to receive Intents
-        // with actions named "custom-event-name".
-//        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-//                new IntentFilter("com.etek.cognitivebeats.EntrainmentService"));
+        //Register to receive messages.
+        //We are registering an observer (mMessageReceiver) to receive Intents
+        //with actions named "custom-event-name".
+        //LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+            //new IntentFilter("com.etek.cognitivebeats.EntrainmentService"));
 
-     //   Intent test = new Intent(this, com.etek.cognitivebeats.EntrainmentService.class);
 
-    //    startService(test);
-
+        loadBeats();
         final Button playButton = (Button) findViewById(R.id.play);
         playButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(mBound) {
-                    ArrayList<BeatConfiguration.BeatParameters> list = new ArrayList<BeatConfiguration.BeatParameters>();
-//                    list.add(new BeatConfiguration.BeatParameters(400, 440, 20000, "Focus!"));
-                    list.add(new BeatConfiguration.BeatParameters(200, 215, 1000 * 60 * 60 * 5));
-//                    list.add(new BeatConfiguration.BeatParameters(200, 213, 10000));
-                    ArrayList<String> effects = new ArrayList<String>();
-                    ArrayList<String> refs = new ArrayList<String>();
-                    BeatConfiguration config = new BeatConfiguration("TestConfig", "TestDescription",
-                            effects, refs, list);
+                    BeatConfiguration config = new BeatConfiguration(mBeats.get(0));
                     mService.play(config);
                 }
             }
@@ -107,15 +110,13 @@ public class LibraryActivity extends AppCompatActivity {
             unbindService(mConnection);
             mBound = false;
         }
-
     }
 
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        Intent intent = new Intent(this, EntrainmentService.class);
-//        stopService(intent);
-//    }
+    @Override
+    protected void onDestroy() {
+        //saveBeats();
+        super.onDestroy();
+    }
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -135,6 +136,27 @@ public class LibraryActivity extends AppCompatActivity {
         }
     };
 
+    public void loadBeats() {
 
+        try {
+            File file = new File(mBeatsFilename);
+            FileInputStream is = openFileInput(mBeatsFilename);
+            CognitiveBeatsProto.BeatConfigurationList.Builder builder = CognitiveBeatsProto.BeatConfigurationList.newBuilder();
+            builder.mergeFrom(is);
+            mBeats = ProtoConverter.toBeatConfigurationList(builder.build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void saveBeats() {
+        try {
+            FileOutputStream os;
+            os = openFileOutput(mBeatsFilename, Context.MODE_PRIVATE);
+            ProtoConverter.toBeatConfigurationListProto(mBeats).writeTo(os);
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

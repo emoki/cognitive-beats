@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_package = "com.etek.cognitivebeats";
+option java_outer_classname = "CognitiveBeatsProto";
+
+message BeatConfigurationList {
+	repeated BeatConfiguration configs = 1;
+}
+
+message BeatConfiguration {
+	string title = 1;
+	string description = 2;
+	repeated string effects = 3;
+	repeated string references = 4;
+	repeated BeatParameters beats = 5;
+
+	message BeatParameters {
+		double freq0 = 1;
+		double freq1 = 2;
+		int64 duration = 3;
+	}
+}

@@ -1,4 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+    }
+}
 
 android {
     compileSdkVersion 25
@@ -30,10 +40,34 @@ android {
 }
 
 dependencies {
+    //    compile 'com.google.protobuf:protobuf-java-util:3.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.google.protobuf:protobuf-java:3.0.0'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:support-v4:25.1.1'
     testCompile 'junit:junit:4.12'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.0.0"
+    }
+    plugins {
+        lite {
+            artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.plugins {
+                lite {}
+            }
+        }
+    }
 }

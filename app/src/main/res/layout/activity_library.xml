@@ -10,12 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.etek.cognitivebeats.LibraryActivity">
 
-    <TextView
-        android:id="@+id/sample_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-
     <Button
         android:text="Stop"
         android:layout_width="wrap_content"

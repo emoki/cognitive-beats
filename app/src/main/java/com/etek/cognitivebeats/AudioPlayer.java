@@ -163,8 +163,9 @@ public class AudioPlayer {
         mServiceHandler.removeMessages(WHAT);
         mTrack.stop();
         mTrack.flush();
-        mBeatConfiguration.clear();
         mThread.quit();
+        if(mBeatConfiguration != null)
+            mBeatConfiguration.reset();
         if(mAudioListener != null)
             mAudioListener.finished();
     }
@@ -195,12 +196,16 @@ public class AudioPlayer {
     }
 
     public void postPause() {
+        if(!isAlive())
+            return;
         Message msg = mServiceHandler.obtainMessage();
         msg.what = WHAT;
         msg.arg1 = PAUSE;
         mServiceHandler.sendMessage(msg);
     }
     public void postResume() {
+        if(!isAlive())
+            return;
         Message msg = mServiceHandler.obtainMessage();
         msg.what = WHAT;
         msg.arg1 = RESUME;
@@ -209,6 +214,8 @@ public class AudioPlayer {
 
 
     public void postStop() {
+        if(!isAlive())
+            return;
         Message msg = mServiceHandler.obtainMessage();
         msg.what = WHAT;
         msg.arg1 = STOP;

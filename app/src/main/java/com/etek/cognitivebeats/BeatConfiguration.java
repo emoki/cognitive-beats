@@ -3,6 +3,7 @@ package com.etek.cognitivebeats;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by user on 2/2/2017.
  */
 
-public class BeatConfiguration implements Parcelable {
+public class BeatConfiguration implements Parcelable, Serializable {
 
     public String mTitle;
     public String mDescription;
@@ -21,33 +22,12 @@ public class BeatConfiguration implements Parcelable {
     public TimeSchedule mTotalTime = new TimeSchedule();
     public int mCurrentTrack = 0;
 
-    public int describeContents() {
-        return 0;
-    }
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mTitle);
-        out.writeString(mDescription);
-        out.writeSerializable(mEffects);
-        out.writeSerializable(mReferences);
-        out.writeTypedList(mBeats);
-    }
-    public static final Parcelable.Creator<BeatParameters> CREATOR
-            = new Parcelable.Creator<BeatParameters>() {
-        public BeatParameters createFromParcel(Parcel in) {
-            return new BeatParameters(in);
-        }
-
-        public BeatParameters[] newArray(int size) {
-            return new BeatParameters[size];
-        }
-    };
-    private BeatConfiguration(Parcel in) {
-        mTitle = in.readString();
-        mDescription = in.readString();
-        mEffects = (ArrayList<String>)in.readSerializable();
-        mReferences = (ArrayList<String>)in.readSerializable();
-        in.readTypedList(mBeats, BeatParameters.CREATOR);
-        mCurrentTrack = 0;
+    public BeatConfiguration(BeatConfiguration b) {
+        mTitle = b.mTitle;
+        mDescription = b.mDescription;
+        mEffects.addAll(b.mEffects);
+        mReferences.addAll(b.mReferences);
+        mBeats.addAll(b.mBeats);
         createTimeScheduleAndDuration();
     }
     public BeatConfiguration(String title, String description, ArrayList<String> effects, ArrayList<String> references,
@@ -97,13 +77,43 @@ public class BeatConfiguration implements Parcelable {
         else
             return null;
     }
-    public void clear() {
-        mBeats.clear();
-        mTimes.clear();
-        mTotalTime.clear();
+    public void reset() {
+        for(TimeSchedule t : mTimes)
+            t.reset();
+        mTotalTime.reset();
     }
 
-    public static class BeatParameters implements Parcelable {
+    public int describeContents() {
+        return 0;
+    }
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(mTitle);
+        out.writeString(mDescription);
+        out.writeSerializable(mEffects);
+        out.writeSerializable(mReferences);
+        out.writeTypedList(mBeats);
+    }
+    public static final Parcelable.Creator<BeatParameters> CREATOR
+            = new Parcelable.Creator<BeatParameters>() {
+        public BeatParameters createFromParcel(Parcel in) {
+            return new BeatParameters(in);
+        }
+
+        public BeatParameters[] newArray(int size) {
+            return new BeatParameters[size];
+        }
+    };
+    private BeatConfiguration(Parcel in) {
+        mTitle = in.readString();
+        mDescription = in.readString();
+        mEffects = (ArrayList<String>)in.readSerializable();
+        mReferences = (ArrayList<String>)in.readSerializable();
+        in.readTypedList(mBeats, BeatParameters.CREATOR);
+        mCurrentTrack = 0;
+        createTimeScheduleAndDuration();
+    }
+
+    public static class BeatParameters implements Parcelable, Serializable {
 
         public double mFreq0;
         public double mFreq1;
@@ -143,7 +153,7 @@ public class BeatConfiguration implements Parcelable {
         }
     }
 
-    public class TimeSchedule {
+    public class TimeSchedule implements Serializable {
         long mTimeStart = 0;
         long mTimeElapsed = 0;
         long mDuration = 0;
@@ -154,7 +164,7 @@ public class BeatConfiguration implements Parcelable {
         TimeSchedule(BeatParameters b) {
             mDuration = b.mDuration;
         }
-        public void clear() {
+        public void reset() {
             mTimeStart = 0;
             mTimeElapsed = 0;
             mDuration = 0;
