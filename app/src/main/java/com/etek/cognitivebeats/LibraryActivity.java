@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.etek.cognitivebeats.dummy.DummyContent;
 import com.google.protobuf.Message;
 import com.google.protobuf.TextFormat;
 
@@ -28,7 +29,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class LibraryActivity extends AppCompatActivity {
+public class LibraryActivity extends AppCompatActivity implements StimulationFragment.OnListFragmentInteractionListener{
 
     private final String mBeatsFilename = "BeatsList";
     private ArrayList<BeatConfiguration> mBeats = new ArrayList<BeatConfiguration>();
@@ -40,6 +41,31 @@ public class LibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
 
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.fragment_container) != null) {
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            loadBeats();
+
+            // Create a new Fragment to be placed in the activity layout
+            StimulationFragment firstFragment = new StimulationFragment();
+
+            // In case this activity was started with special instructions from an
+            // Intent, pass the Intent's extras to the fragment as arguments
+            firstFragment.setArguments(getIntent().getExtras());
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, firstFragment).commit();
+        }
+
         //Register to receive messages.
         //We are registering an observer (mMessageReceiver) to receive Intents
         //with actions named "custom-event-name".
@@ -47,42 +73,45 @@ public class LibraryActivity extends AppCompatActivity {
             //new IntentFilter("com.etek.cognitivebeats.EntrainmentService"));
 
 
-        loadBeats();
-        final Button playButton = (Button) findViewById(R.id.play);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(mBound) {
-                    BeatConfiguration config = new BeatConfiguration(mBeats.get(0));
-                    mService.play(config);
-                }
-            }
-        });
-        final Button stopButton = (Button) findViewById(R.id.stop);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(mBound) {
-                    mService.stop();
-                }
-            }
-        });
-        final Button pauseButton = (Button) findViewById(R.id.pause);
-        pauseButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(mBound) {
-                    mService.pause();
-                }
-            }
-        });
-        final Button resumeButton = (Button) findViewById(R.id.resume);
-        resumeButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(mBound) {
-                    mService.resume();
-                }
-            }
-        });
+//        final Button playButton = (Button) findViewById(R.id.play);
+//        playButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                if(mBound) {
+//                    BeatConfiguration config = new BeatConfiguration(mBeats.get(0));
+//                    mService.play(config);
+//                }
+//            }
+//        });
+//        final Button stopButton = (Button) findViewById(R.id.stop);
+//        stopButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                if(mBound) {
+//                    mService.stop();
+//                }
+//            }
+//        });
+//        final Button pauseButton = (Button) findViewById(R.id.pause);
+//        pauseButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                if(mBound) {
+//                    mService.pause();
+//                }
+//            }
+//        });
+//        final Button resumeButton = (Button) findViewById(R.id.resume);
+//        resumeButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                if(mBound) {
+//                    mService.resume();
+//                }
+//            }
+//        });
     }
 
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
+    }
 
     // Our handler for received Intents. This will be called whenever an Intent
     // with an action named "custom-event-name" is broadcasted.

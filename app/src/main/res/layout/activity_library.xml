@@ -10,41 +10,46 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.etek.cognitivebeats.LibraryActivity">
 
-    <Button
-        android:text="Stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/play"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:id="@+id/stop" />
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <Button
-        android:text="Play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="66dp"
-        android:id="@+id/play"
-        android:layout_alignLeft="@+id/stop"
-        android:layout_alignStart="@+id/stop" />
+    <!--<Button-->
+        <!--android:text="Stop"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/play"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="40dp"-->
+        <!--android:id="@+id/stop" />-->
 
-    <Button
-        android:text="Pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/stop"
-        android:layout_alignLeft="@+id/stop"
-        android:layout_alignStart="@+id/stop"
-        android:layout_marginTop="59dp"
-        android:id="@+id/pause" />
+    <!--<Button-->
+        <!--android:text="Play"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="66dp"-->
+        <!--android:id="@+id/play"-->
+        <!--android:layout_alignLeft="@+id/stop"-->
+        <!--android:layout_alignStart="@+id/stop" />-->
 
-    <Button
-        android:text="Resume"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pause"
-        android:layout_alignLeft="@+id/pause"
-        android:layout_alignStart="@+id/pause"
-        android:layout_marginTop="50dp"
-        android:id="@+id/resume" />
+    <!--<Button-->
+        <!--android:text="Pause"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/stop"-->
+        <!--android:layout_alignLeft="@+id/stop"-->
+        <!--android:layout_alignStart="@+id/stop"-->
+        <!--android:layout_marginTop="59dp"-->
+        <!--android:id="@+id/pause" />-->
+
+    <!--<Button-->
+        <!--android:text="Resume"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/pause"-->
+        <!--android:layout_alignLeft="@+id/pause"-->
+        <!--android:layout_alignStart="@+id/pause"-->
+        <!--android:layout_marginTop="50dp"-->
+        <!--android:id="@+id/resume" />-->
 </RelativeLayout>
